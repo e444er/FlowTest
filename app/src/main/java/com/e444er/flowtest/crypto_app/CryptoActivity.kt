@@ -3,12 +3,12 @@ package com.e444er.flowtest.crypto_app
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.view.isVisible
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.e444er.flowtest.R
 import com.e444er.flowtest.databinding.ActivityCryptoBinding
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 
 class CryptoActivity : AppCompatActivity() {
