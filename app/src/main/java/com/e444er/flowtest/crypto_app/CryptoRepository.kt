@@ -3,6 +3,7 @@ package com.e444er.flowtest.crypto_app
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlin.random.Random
 
@@ -11,15 +12,25 @@ object CryptoRepository {
     private val currencyNames = listOf("BTC", "ETH", "USDT", "BNB", "USDC")
     private val currencyList = mutableListOf<Currency>()
 
+//    private val _currencyListFlow = MutableSharedFlow<List<Currency>>()
+//    val currencyListFlow = _currencyListFlow.asSharedFlow()
+
+    private val refresh = MutableSharedFlow<Unit>()
     fun getCurrencyList(): Flow<List<Currency>> = flow {
+        delay(3000)
+        generateCurrencyList()
         emit(currencyList.toList())
-        while (true) {
+        refresh.collect {
             delay(3000)
             generateCurrencyList()
             emit(currencyList.toList())
-            delay(3000)
         }
     }
+
+    suspend fun refreshList() {
+        refresh.emit(Unit)
+    }
+
 
     private fun generateCurrencyList() {
         val prices = buildList {

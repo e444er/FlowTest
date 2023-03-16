@@ -27,6 +27,9 @@ class CryptoActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupRecyclerView()
         observeViewModel()
+        binding.button.setOnClickListener {
+            viewModel.refreshList()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -38,22 +41,20 @@ class CryptoActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.state
-                    .transform {
-                        delay(10000)
-                        emit(it)
-                    }
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.RESUMED)
                     .collect {
                         when (it) {
                             is State.Initial -> {
                                 binding.progressBarLoading.isVisible = false
+                                binding.button.isEnabled = false
                             }
                             is State.Loading -> {
                                 binding.progressBarLoading.isVisible = true
+                                binding.button.isEnabled = false
                             }
                             is State.Content -> {
                                 binding.progressBarLoading.isVisible = false
                                 adapter.submitList(it.currencyList)
+                                binding.button.isEnabled = true
                             }
                         }
                     }
